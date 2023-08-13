@@ -45,10 +45,11 @@ contract ERC721 is IERC721, IERC721Metadata, IERC165 {
     mapping(uint256 => address) _owners;
     mapping(uint256 => address) _tokenApprovals;
     mapping(address => mapping(address => bool)) _operatorApprovals;
+    mapping(uint256 => string) _tokenURIs;
     string _name;
     string _symbol;
-    mapping(uint256 => string) _tokenURIs;
-
+    uint256 mintPrice = 800 wei;
+    
     constructor(string memory name_, string memory symbol_) {
         _name = name_;
         _symbol = symbol_;
@@ -152,18 +153,19 @@ contract ERC721 is IERC721, IERC721Metadata, IERC165 {
         emit Transfer(address(0), to, tokenId);
     }
 
-    function safemint(address to, uint256 tokenId, bytes memory data) public {
+    function safemint(address to, uint256 tokenId, string calldata uri, bytes memory data) public {
         mint(to, tokenId);
+        setTokenURI(tokenId, uri);
         require(_checkOnERC721Received(address(0), to, tokenId, data), "ERROR: ERC721Receiver is not implemented");
     }
 
-    function safemint(address to, uint256 tokenId) public {
-        safemint(to, tokenId, "");
+    function safemint(address to, uint256 tokenId, string calldata uri) public {
+        safemint(to, tokenId, uri, "");
     }
 
     function burn(uint256 tokenId) public {
         address owner = _owners[tokenId];
-        require(msg.sender == owner, "ERROR, only owner can burn");
+        require(msg.sender == owner, "ERROR, only o wner can burn");
         _balances[owner] -= 1;
         delete _owners[tokenId];
         delete _tokenApprovals[tokenId];

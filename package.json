@@ -1,0 +1,6 @@
+{
+  "name": "hardhat-project",
+  "dependencies": {
+    "@remix-project/remixd": "^0.6.16"
+  }
+}
